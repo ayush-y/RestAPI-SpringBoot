@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 //@Controller
@@ -58,7 +60,7 @@ public class TodoController {
         return ResponseEntity.badRequest().build();
     }
     @PatchMapping("/todos/{todoId}")
-    public ResponseEntity<Todo> updateTodoById(@PathVariable Long todoId, @RequestBody Todo updatedTodo){
+    public ResponseEntity<?> updateTodoById(@PathVariable Long todoId, @RequestBody Todo updatedTodo){
         for(Todo todo : todoList){
             if(todo.getId() == todoId) {
                 todo.setCompleted(updatedTodo.isCompleted());
@@ -67,6 +69,9 @@ public class TodoController {
                         .body(todo);
             }
         }
-        return ResponseEntity.notFound().build();
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "No todo found to be updated");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(error);
     }
 }
