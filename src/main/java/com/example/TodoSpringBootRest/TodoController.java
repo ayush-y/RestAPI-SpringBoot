@@ -1,77 +1,117 @@
 package com.example.TodoSpringBootRest;
 
-import com.sun.net.httpserver.HttpsServer;
-import jakarta.websocket.server.PathParam;
+import com.example.TodoSpringBootRest.Todo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-//@Controller
-//@ResponseBody
+@RequestMapping("/api/v1/todos")
 public class TodoController {
-    private static List<Todo> todoList;
 
-    public TodoController() {
+    private TodoService todoService; // anotherTodoService
+
+    private TodoService todoservice2; // fakeTodoService
+
+    private static List<Todo> todoList;
+    // Error message when the todo is not found
+    private static final String TODO_NOT_FOUND = "Todo not found";
+
+    public TodoController(
+            @Qualifier("anotherTodoService") TodoService todoService,
+            @Qualifier("fakeTodoService")  TodoService todoservice2) {
+
+        this.todoService = todoService;
+        this.todoservice2 = todoservice2;
         todoList = new ArrayList<>();
         todoList.add(new Todo(1, false, "Todo 1", 1));
-        todoList.add(new Todo(2, true, "Todo 2", 1));
+        todoList.add(new Todo(2, true, "Todo 2", 2));
     }
-    @GetMapping("/todos")
-    public ResponseEntity<List<Todo>> getTodos() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(todoList);
+
+
+    @GetMapping
+    public ResponseEntity<List<Todo>> getTodos(@RequestParam(required = false) Boolean isCompleted) {
+        System.out.println("Incoming query params: " + isCompleted + " " + this.todoService.doSomething());
+        return ResponseEntity.ok(todoList);
     }
-    @GetMapping("/todos/{todoId}")
-    public ResponseEntity<Todo> getTodoById(@PathVariable Long todoId) {
-            for(Todo todo : todoList){
-                if(todo.getId() == todoId){
-                    return ResponseEntity.status(HttpStatus.OK)
-                            .body(todo);
-                }
-            }
-        return ResponseEntity.notFound().build();
-    }
-    @PostMapping("/todos")
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo newTodo){
+
+    @PostMapping
+    public ResponseEntity<Todo> createTodo(@RequestBody Todo newTodo) {
+
         /**
-         * @ResponseStatus(HttpStatus.CREATED) // 201 if created
-         * qe can use above annotation to get status code
+         * we can use this annotation to set the status code @ResponseStatus(HttpStatus.CREATED)
+         *
          */
         todoList.add(newTodo);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(newTodo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTodo);
     }
-    @DeleteMapping("/todos/{todoId}")
-    public ResponseEntity<Todo> deleteTodoById(@PathVariable Long todoId){
-        for(Todo todo : todoList){
-            if(todo.getId() == todoId) {
-                todoList.remove(todo);
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(todo);
-            }
 
-        }
-        return ResponseEntity.badRequest().build();
-    }
-    @PatchMapping("/todos/{todoId}")
-    public ResponseEntity<?> updateTodoById(@PathVariable Long todoId, @RequestBody Todo updatedTodo){
-        for(Todo todo : todoList){
-            if(todo.getId() == todoId) {
-                todo.setCompleted(updatedTodo.isCompleted());
-                todo.setTitle(updatedTodo.getTitle());
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(todo);
+
+    @GetMapping("/{todoId}")
+    public ResponseEntity<?> getTodoById(@PathVariable Long todoId) {
+        for (Todo todo : todoList) {
+            if (todo.getId() == todoId) {
+                return ResponseEntity.ok(todo);
             }
         }
-        Map<String, String> error = new HashMap<>();
-        error.put("message", "No todo found to be updated");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(error);
+        // HW: Along with 404 status code, try to send a json {message: Todo not found}
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TODO_NOT_FOUND);
     }
+
+    /**
+     * API to delete a Todo
+     * We can delete a particular todo using its ID as it is unique for every todo.
+     */
+    @DeleteMapping("/{todoId}")
+    public ResponseEntity<?> deleteTodoById(@PathVariable Long todoId) {
+        Todo todoToRemove = null;
+        for(Todo todo : todoList) {
+            if(todo.getId() == todoId) {
+                todoToRemove = todo;
+                break;
+            }
+        }
+
+        if(todoToRemove != null) {
+            todoList.remove(todoToRemove);
+            String deleteSuccessMessage = "Todo deleted successfully";
+            return ResponseEntity.status(HttpStatus.OK).body(deleteSuccessMessage);
+        } else {
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(TODO_NOT_FOUND);
+        }
+    }
+
+    /**
+     * API to update an existing Todo using its ID
+     * @param todoId
+     * @param title
+     * @param isCompleted
+     * @param userId
+     * @return
+     */
+    @PatchMapping("/{todoId}")
+    ResponseEntity<?> updateTodoById(@PathVariable Long todoId, @RequestParam(required = false) String title, @RequestParam(required = false) Boolean isCompleted, Integer userId) {
+        for(Todo todo : todoList) {
+            if(todo.getId() == todoId) {
+                if(title != null) {
+                    todo.setTitle(title);
+                }
+                if(isCompleted != null) {
+                    todo.setCompleted(isCompleted);
+                }
+                if(userId != null) {
+                    todo.setUserId(userId);
+                }
+
+                return ResponseEntity.ok(todo);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(TODO_NOT_FOUND);
+    }
+
 }

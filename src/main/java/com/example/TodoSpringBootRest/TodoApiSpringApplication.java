@@ -2,12 +2,9 @@ package com.example.TodoSpringBootRest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 @SpringBootApplication
-public class TodoSpringBootRestApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(TodoSpringBootRestApplication.class, args);
-	}
-
+public class TodoApiSpringApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TodoApiSpringApplication.class, args);
+    }
 }
