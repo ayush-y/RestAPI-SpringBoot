@@ -31,6 +31,8 @@ public class TodoController {
         todoList = new ArrayList<>();
         todoList.add(new Todo(1, false, "Todo 1", 1));
         todoList.add(new Todo(2, true, "Todo 2", 2));
+        todoList.add(new Todo(3, false, "Todo 3", 1));
+        todoList.add(new Todo(4, true, "Todo 4", 3));
     }
 
 
