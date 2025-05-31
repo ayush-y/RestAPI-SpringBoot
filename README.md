@@ -30,3 +30,4 @@ Gradle build system for project automation.
 │   │   ├── TodoSpringBootRestApplicationTests.java # Unit tests
 ├── .gitattributes                               # Git configuration for file attributes
 ├── .gitignore                                   # Git ignore file for unnecessary files.
+Used Postman tool to test all APIs
