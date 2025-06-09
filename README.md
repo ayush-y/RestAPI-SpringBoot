@@ -12,6 +12,29 @@ RESTful API with TodoController.
 
 Project Structure
 
+
+## Features
+
+- CRUD operations for managing to-do items
+- Modular service implementation
+- Spring Boot REST API design
+- Time tracking aspect integration
+- Mock service implementations for testing
+
+## Setup & Installation
+
+### Prerequisites
+- Java 17+
+- Gradle 7+
+- Spring Boot 3+
+- Postman (Optional for API testing)
+
+### Steps
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/todo-spring-boot.git
+
+
 Gradle build system for project automation.
 ├── gradle/                # Gradle build scripts
 ├── src/
