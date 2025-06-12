@@ -6,7 +6,10 @@ The project follows best practices for modular design, aspect-oriented programmi
 - Features
 CRUD operations for to-do items.
 
-Implementation of service layers (TodoService, FakeTodoService, AnotherTodoService).
+Implementation of service layers 
+-TodoService 
+-FakeTodoService 
+-AnotherTodoService
 
 Aspect-oriented logging (TimeMonitor, TimeMonitorAspect).
 
