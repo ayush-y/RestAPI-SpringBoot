@@ -11,7 +11,9 @@ Implementation of service layers
 -FakeTodoService 
 -AnotherTodoService
 
-Aspect-oriented logging (TimeMonitor, TimeMonitorAspect).
+Aspect-oriented logging
+(TimeMonitor, 
+TimeMonitorAspect).
 
 RESTful API with TodoController.
 
