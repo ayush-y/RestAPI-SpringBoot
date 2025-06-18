@@ -26,7 +26,7 @@ Project Structure
 - Modular service implementation
 - Spring Boot REST API design
 - Time tracking aspect integration
-- Mock service implementations for testing
+- Mock service implementations for testing purpose
 
 ## Setup & Installation
 
